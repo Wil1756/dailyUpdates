@@ -11,8 +11,7 @@ import Logo from '../components/auth/Logo';
 import axios from 'axios';
 
 
-const Signup = () => {
-    const [name, setName] = useState('');
+const Signin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -22,21 +21,21 @@ const Signup = () => {
     
     const handleSubmit = async () => {
       setLoading(true);
-      if(!name || !email || !password){
+      if(!email || !password){
         alert("All fields are required!!!")
         setLoading(false);
         return;
       }
-      // console.log('SIGN UP REQUEST=>', name, email, password)
+      // console.log('SIGN IN REQUEST=>', name, email, password)
       try {
-        const {data} = await axios.post("http://localhost:8000/api/signup",{
+        const {data} = await axios.post("http://localhost:8000/api/signin",{
           name,
           email,
           password
         })
         setLoading(false);
         console.log('SIGN IN SUCESS =>', data);
-        alert("Sign up successful");
+        alert("Sign In successful");
       } catch (error) {
         console.log(error);
         setLoading(false);
@@ -47,15 +46,9 @@ const Signup = () => {
         <View style={{marginVertical: 100}}>
           <Logo/>
           <Text style={{ ...theme.fonts.medium, fontSize: 25, color: 'black',textAlign: 'center'}}>
-            Sign Up
+            Sign In
           </Text>
-          <UserInput 
-            name='NAME' 
-            value={name} 
-            setValue={setName} 
-            autoCapitalize='words' 
-            autoCorrect={false}
-          />
+
           <UserInput 
             name='EMAIL'
             value={email} 
@@ -71,14 +64,15 @@ const Signup = () => {
             autoComplete='password'
           />
           <SubmitButton 
-            title='Sign Up' 
+            title='Sign In' 
             handleSubmit={handleSubmit} 
             loading={loading}
           />
           <Text style={{textAlign:'center'}}>
-            Alreadly Joined?&nbsp;
-            <Text style={{color: '#ff2222'}}>Sign In</Text>
+            Not yet registered?&nbsp;
+            <Text style={{color: '#ff2222'}}>Sign Up</Text>
           </Text>
+          <Text style={{textAlign:'center', color:'#FFA500', marginTop:5}}>Forgot Password</Text>
         </View>
         
         {/* <Text>{JSON.stringify({name, email, password}, null , 4)}</Text> */}
@@ -86,4 +80,4 @@ const Signup = () => {
     );
 };
  
-export default Signup;
+export default Signin;

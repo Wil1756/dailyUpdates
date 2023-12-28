@@ -7,9 +7,22 @@ type UserInputProps = {
     name: string;
     value: string;
     setValue: (text: string) => void;
+    autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+    autoCorrect?: boolean;
+    autoComplete?: 'name' | 'email' | 'password' | 'off';
+    secureTextEntry?: boolean;
+    keyboardType?:'default' | 'numeric' | 'email-address' | 'phone-pad';
 }
 
-const UserInput: React.FC<UserInputProps> = ({name, value, setValue}) => {
+const UserInput: React.FC<UserInputProps> = ({
+    name, 
+    value, 
+    setValue, 
+    autoCapitalize='none', 
+    keyboardType ='default', 
+    secureTextEntry = false,
+    autoComplete = 'off'
+    }) => {
     const theme = useTheme();
 
     const handleInputChange  = (text: string) => {
@@ -24,7 +37,13 @@ const UserInput: React.FC<UserInputProps> = ({name, value, setValue}) => {
                 label={name}
                 value={value}
                 onChangeText={handleInputChange}
+                autoCorrect={false}
+                autoCapitalize={autoCapitalize}
+                autoComplete={autoComplete}
+                secureTextEntry={secureTextEntry}
+                keyboardType={keyboardType}
             />
+            
         </View>
     );
 };
