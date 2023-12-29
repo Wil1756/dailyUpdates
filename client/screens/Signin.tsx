@@ -2,6 +2,7 @@ import React,{useState} from 'react';
 import {View} from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { StackNavigationProp } from '@react-navigation/stack';
 
 
 import UserInput from '../components/auth/UserInput';
@@ -10,8 +11,19 @@ import Logo from '../components/auth/Logo';
 
 import axios from 'axios';
 
+type RootStackParamList = {
+  Signup: undefined;
+  Signin: undefined;
+};
 
-const Signin = () => {
+type SigninScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Signin'>;
+
+type SigninProps = {
+  navigation: SigninScreenNavigationProp;
+};
+
+
+const Signin: React.FC<SigninProps> = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -70,7 +82,7 @@ const Signin = () => {
           />
           <Text style={{textAlign:'center'}}>
             Not yet registered?&nbsp;
-            <Text style={{color: '#ff2222'}}>Sign Up</Text>
+            <Text onPress={()=> navigation.navigate('Signup')}style={{color: '#ff2222'}}>Sign Up</Text>
           </Text>
           <Text style={{textAlign:'center', color:'#FFA500', marginTop:5}}>Forgot Password</Text>
         </View>
