@@ -3,12 +3,13 @@ import {View} from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { StackNavigationProp } from '@react-navigation/stack';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import UserInput from '../components/auth/UserInput';
 import SubmitButton from '../components/auth/SubmitButton';
 import Logo from '../components/auth/Logo';
 import axios from 'axios';
+import { API } from '../config';
 
 type RootStackParamList = {
   Signup: undefined;
@@ -40,14 +41,21 @@ const Signup: React.FC<SignupProps> = ({navigation}) => {
       }
       // console.log('SIGN UP REQUEST=>', name, email, password)
       try {
-        const {data} = await axios.post("http://localhost:8000/api/signup",{
+        const {data} = await axios.post(`${API}/signup`,{
           name,
           email,
           password
         })
-        setLoading(false);
-        console.log('SIGN IN SUCESS =>', data);
-        alert("Sign up successful");
+        if (data.error){
+          alert(data.error)
+          setLoading(false);
+        }else{
+          // save response in async storage
+          await AsyncStorage.setItem('@auth',JSON.stringify(data))
+          setLoading(false);
+          console.log('SIGN IN SUCESS =>', data);
+          alert("Sign up successful");
+        }
       } catch (error) {
         console.log(error);
         setLoading(false);

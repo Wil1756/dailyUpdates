@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { StackNavigationProp } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 import UserInput from '../components/auth/UserInput';
@@ -10,6 +11,7 @@ import SubmitButton from '../components/auth/SubmitButton';
 import Logo from '../components/auth/Logo';
 
 import axios from 'axios';
+import { API } from '../config';
 
 type RootStackParamList = {
   Signup: undefined;
@@ -38,20 +40,32 @@ const Signin: React.FC<SigninProps> = ({navigation}) => {
         setLoading(false);
         return;
       }
-      // console.log('SIGN IN REQUEST=>', name, email, password)
+      console.log('SIGN IN REQUEST=>', email, password)
       try {
-        const {data} = await axios.post("http://localhost:8000/api/signin",{
-          name,
+        const {data} = await axios.post(`${API}/signin`,{
           email,
           password
         })
-        setLoading(false);
-        console.log('SIGN IN SUCESS =>', data);
-        alert("Sign In successful");
+        if (data.error){
+          alert(data.error)
+          setLoading(false);
+        }else{
+          await AsyncStorage.setItem('@auth',JSON.stringify(data))
+          setLoading(false);
+          console.log('SIGN IN SUCESS =>', data);
+          alert("Sign In successful");
+        }
+        
       } catch (error) {
         console.log(error);
         setLoading(false);
       }
+      
+      const loadFromAsyncStorage =async () => {
+        let data = await AsyncStorage.getItem('@auth');
+        console.log('FROM ASYNC STORAGE => ',data)
+      }
+      loadFromAsyncStorage()
     }
     return (
       <KeyboardAwareScrollView contentContainerStyle={{ flex: 1, justifyContent: 'center', }}>
@@ -81,7 +95,7 @@ const Signin: React.FC<SigninProps> = ({navigation}) => {
             loading={loading}
           />
           <Text style={{textAlign:'center'}}>
-            Not yet registered?&nbsp;
+            Don't have an account already?&nbsp;
             <Text onPress={()=> navigation.navigate('Signup')}style={{color: '#ff2222'}}>Sign Up</Text>
           </Text>
           <Text style={{textAlign:'center', color:'#FFA500', marginTop:5}}>Forgot Password</Text>
